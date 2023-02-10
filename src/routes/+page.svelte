@@ -85,7 +85,7 @@
           </li>
         {:else}
           <li class="flex flex-col self-end items-center">
-            <div class="bg-blue-500 w-20" style="height: {planet.factor * 20}vh;" />
+            <div class="bg-blue-500 w-20" style="height: {planet.factor * 10}vh;" />
             <span class="text-2xl">{planetWeight} {kgOut ? "kg" : "lb"}</span>
             <img src={planet.icon} alt="Icon for {planet.name}" class="h-20 w-20" />
             {planet.name}
