@@ -32,21 +32,13 @@
     { icon: iconGiraffe, name: "Giraffe (male)", kg: 1192 },
     { icon: iconPerson, name: "Person", kg: 70 },
   ];
-  let kgIn = true;
   let kgOut = false;
-  $: factor = kgIn == kgOut ? 1 : kgIn ? 2.20462 : 1 / 2.20462;
 </script>
 
 <svelte:window bind:innerWidth />
 <div class="flex flex-col items-center">
   <h1 class="text-4xl lg:text-6xl font-bold text-center my-8">Planet Weight</h1>
-  <div class="flex flex-wrap my-8 gap-8 justify-center">
-    <button
-      class="bg-zinc-800 h-16 w-16 rounded-2xl inline-flex items-center justify-center hover:bg-zinc-700 transition-all"
-      on:click={() => (kgIn = !kgIn)}
-    >
-      in<br />{kgIn ? "kg" : "lb"}
-    </button>
+  <div class="flex flex-wrap mt-8 gap-8 justify-center">
     <button
       class="bg-zinc-800 h-16 w-16 rounded-2xl inline-flex items-center justify-center hover:bg-zinc-700 transition-all"
       on:click={() => (kgOut = !kgOut)}
@@ -59,13 +51,13 @@
         type="number"
         bind:value={weight}
       />
-      <span class="self-center px-2">{kgIn ? "kg" : "lb"}</span>
+      <span class="self-center px-2">kg</span>
     </div>
     <div class="flex h-16 border-zinc-500 border-2 rounded-xl overflow-hidden">
       {#each exampleObjects as { icon, name, kg }}
         <button
           class="p-2 hover:bg-zinc-800 transition-all inline-flex flex-col items-center"
-          on:click={() => (weight = (kgIn ? kg : kg * 2.20462).toFixed(2))}
+          on:click={() => (weight = kg.toFixed(2))}
         >
           <img src={icon} alt="Icon for apple" class="h-6 w-6" />
           {name}
@@ -74,9 +66,10 @@
     </div>
   </div>
   {#if weight}
+    <p class="mb-8">or {(weight * 2.20462).toFixed(2)} lb</p>
     <ul class="lg:flex gap-4 lg:absolute lg:bottom-8">
       {#each planets as planet}
-        {@const planetWeight = (weight * planet.factor * factor).toFixed(1)}
+        {@const planetWeight = (weight * (kgOut ? 1 : planet.factor)).toFixed(1)}
         {#if innerWidth < 1024}
           <li class="h-16 flex whitespace-nowrap items-center">
             <img src={planet.icon} alt="Icon for {planet.name}" class="h-16 w-16" />
