@@ -7,6 +7,7 @@
 
   import iconMercury from "$lib/planets/mercury.svg";
   import iconVenus from "$lib/planets/venus.svg";
+  import iconEarth from "$lib/planets/earth.svg";
   import iconMoon from "$lib/planets/moon.svg";
   import iconMars from "$lib/planets/mars.svg";
   import iconJupiter from "$lib/planets/jupiter.svg";
@@ -18,6 +19,7 @@
   const planets = [
     { name: "Mercury", factor: 0.38, icon: iconMercury },
     { name: "Venus", factor: 0.91, icon: iconVenus },
+    { name: "Earth", factor: 1, icon: iconEarth },
     { name: "the Moon", factor: 0.165, icon: iconMoon },
     { name: "Mars", factor: 0.38, icon: iconMars },
     { name: "Jupiter", factor: 2.34, icon: iconJupiter },
@@ -38,7 +40,7 @@
 <svelte:window bind:innerWidth />
 <div class="flex flex-col items-center">
   <h1 class="text-4xl lg:text-6xl font-bold text-center my-8">Planet Weight</h1>
-  <div class="flex flex-wrap mt-8 gap-8 justify-center">
+  <div class="flex flex-wrap my-8 gap-8 justify-center">
     <button
       class="bg-zinc-800 h-16 w-16 rounded-2xl inline-flex items-center justify-center hover:bg-zinc-700 transition-all"
       on:click={() => (kgOut = !kgOut)}
@@ -66,20 +68,27 @@
     </div>
   </div>
   {#if weight}
-    <p class="mb-8">or {(weight * 2.20462).toFixed(2)} lb</p>
     <ul class="lg:flex gap-4 lg:absolute lg:bottom-8">
       {#each planets as planet}
-        {@const planetWeight = (weight * (kgOut ? 1 : planet.factor)).toFixed(1)}
+        {@const planetWeight = weight * (kgOut ? 1 : planet.factor * 2.20462)}
+        {@const planetWeightStr =
+          planetWeight < 1
+            ? planetWeight.toFixed(3)
+            : planetWeight < 10
+            ? planetWeight.toFixed(2)
+            : planetWeight < 100
+            ? planetWeight.toFixed(1)
+            : planetWeight.toFixed(0)}
         {#if innerWidth < 1024}
           <li class="h-16 flex whitespace-nowrap items-center">
             <img src={planet.icon} alt="Icon for {planet.name}" class="h-16 w-16" />
-            {planetWeight}
+            {planetWeightStr}
             {kgOut ? "kg" : "lb"} on {planet.name}
           </li>
         {:else}
           <li class="flex flex-col self-end items-center">
             <div class="bg-blue-500 w-20" style="height: {planet.factor * 10}vh;" />
-            <span class="text-2xl">{planetWeight} {kgOut ? "kg" : "lb"}</span>
+            <span class="text-2xl">{planetWeightStr} {kgOut ? "kg" : "lb"}</span>
             <img src={planet.icon} alt="Icon for {planet.name}" class="h-20 w-20" />
             {planet.name}
           </li>
